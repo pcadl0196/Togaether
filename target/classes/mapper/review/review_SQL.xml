@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="review">
+	
+	<!-- 23.01.16 신현지: review테이블에 리뷰등록 -->
+	<!-- 23.01.18 신현지: commandMap에 시퀀스가 idx라는 이름으로 담기도록 설정 -->
+	<insert id="insertReview" parameterType="hashmap" useGeneratedKeys="true" keyProperty="idx">
+		<selectKey keyProperty="idx" resultType="string" order="BEFORE">
+			SELECT SEQ_REVIEW.NEXTVAL FROM DUAL
+		</selectKey>
+		insert into review (
+		re_idx, re_pl_idx, re_writer_id, re_writer_name,
+		re_star, re_contents,
+		re_reg_date, re_mod_date, re_del_gb
+		) values (
+		#{idx}, #{re_pl_idx} , #{re_writer_id} , #{re_writer_name},
+		#{re_star} , #{re_contents},
+		sysdate, sysdate, 'N'
+		)
+	</insert>
+	
+	<!-- 23.01.20 신현지: 마이페이지에서 내가 쓴 리뷰확인-->
+	<!-- 23.01.25 신현지: 리뷰테이블과 시설테이블을 조인하여 리뷰에 대한 정보 + 시설의 정보를 가져옴-->
+	<select id="openMyReviews" parameterType="hashmap" resultType="hashmap">
+	select  a.re_idx,a.re_pl_idx,a.re_star,a.re_contents ,b.pl_name,a.re_reg_date 
+	from ( 
+	    select * from review    
+	    where re_writer_id = #{mem_id}
+	    and re_del_gb='N'
+	) a left join place b on a.re_pl_idx = b.pl_idx  
+	</select>
+	
+	<!-- 23.01.25 신현지: 내가 작성한 하나의 리뷰 출력-->
+	<select id="openMyReview" parameterType="hashmap" resultType="hashmap">
+		select * from review a join place b
+		on a.re_pl_idx = b.pl_idx
+		where re_idx = #{re_idx}
+	</select>
+	
+	
+	<!-- 23.01.26 신현지: 리뷰에 불러올 시설썸네일 가져오기-->
+	<select id="openMyReviewPlacePhoto" parameterType="hashmap" resultType="hashmap">
+		select ph_stored_file_name from photo
+		where ph_board_type='place'
+		and ph_del_gb = 'N'
+		and ph_board_idx = #{pl_idx}
+	</select>
+	
+	<!-- 23.01.28 신현지 : 리뷰 삭제하기 -->
+	<update id="deleteReview" parameterType="hashmap">
+		update review
+		set re_del_gb = 'Y'
+		where re_idx = #{re_idx}
+	</update>
+	
+
+	
+	<!-- 23.01.31 신현지: 리뷰 수정 -->
+	<update id="updateReview" parameterType="hashmap">
+		update review
+		set re_contents = #{re_contents},
+		re_star = #{re_star},
+		re_mod_date = sysdate
+		where re_idx = #{re_idx}
+	</update>
+	
+	
+	<!-- 23.02.01 신현지: 관리자페이지에서 모든 리뷰 불러오기 -->
+	<select id="openReviews" parameterType="hashmap" resultType="hashmap">
+		select ph_stored_file_name from photo
+		where ph_board_type='place'
+		and ph_del_gb = 'N'
+		and ph_board_idx = #{pl_idx}
+	</select>
+
+
+</mapper>

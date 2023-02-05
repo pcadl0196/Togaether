@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="join">
+
+
+ <insert id="insertMembers" parameterType="HashMap" >
+   <![CDATA[
+       INSERT INTO
+           MEMBERS(
+              MEM_ID,
+              MEM_PW,
+              MEM_CALL,
+              MEM_EMAIL,
+              MEM_ADDR,
+              MEM_TYPE,
+              MEM_DOG_NAME,
+              MEM_DOG_NUM,
+              MEM_BR_IDX,
+              MEM_BR_NAME,
+              MEM_DOG_WEIGHT,
+              MEM_DOG_MBTI,
+              MEM_DOG_ETC,
+              MEM_REG_DATE,
+              MEM_MOD_DATE,
+              MEM_DEL_GB)
+          VALUES(
+              #{MEM_ID},
+              #{MEM_PW},
+              #{MEM_CALL},
+              #{MEM_EMAIL},
+              #{MEM_ADDR},
+              1,
+              #{MEM_DOG_NAME},
+              #{MEM_DOG_NUM},
+              #{KINDOFDOG},
+              #{MEM_BR_NAME},
+              #{MEM_DOG_WEIGHT},
+              null,
+              #{MEM_DOG_ETC},
+              sysdate,
+              sysdate,
+              'N')
+   ]]>
+ </insert>
+
+ <select id="findId" parameterType="String" resultType="Integer">
+     <![CDATA[
+        SELECT COUNT(*) FROM MEMBERS WHERE MEM_ID = #{MEM_ID}
+        ]]>
+ </select>
+
+<select id="selectListOfDog" parameterType="hashmap" resultType="hashmap">
+     <![CDATA[
+        SELECT * FROM BREED WHERE ROWNUM <= 10
+    ]]>
+ </select>
+
+<select id="findEmail" parameterType="hashmap" resultType="Integer">
+     <![CDATA[
+        SELECT COUNT(*) FROM MEMBERS WHERE MEM_EMAIL = #{MEM_EMAIL}
+        ]]>
+ </select>
+
+
+
+
+
+
+
+
+ 
+ </mapper>
