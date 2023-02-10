@@ -64,3 +64,5 @@
 	</div>
 </div>
 </main>
+
+<%@ include file="/WEB-INF/include/common-footer.jspf" %>

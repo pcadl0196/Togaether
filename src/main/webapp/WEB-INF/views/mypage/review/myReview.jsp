@@ -1,9 +1,16 @@
 <%@ page language="java" contentType="text/html; UTF-8" pageEncoding="UTF-8" %>
 <%@ include file="/WEB-INF/include/user-header.jspf" %>
+<link type="text/css" rel="stylesheet" href="/resources/css/common/photo.css" ></link>
+
 <style>
 	#stars { 
 		display: inline-block; 
-		font-size : 20px;
+		font-size : 50px;
+	}
+	
+	#img_upload label{
+		width : 120px;
+		height : 120px;
 	}
 	
 	#wrap {
@@ -12,7 +19,8 @@
 	}
 	
 	#re_contents {
-		width:60%;
+		color : #808991;
+		margin : auto;
 	}
 	
 	#place {
@@ -30,11 +38,6 @@
 	    box-shadow: 3px 3px 5px #d1d5d9; 
 	    margin : auto;
 	} 
-	
-	
-	#photo{
-		border-radius : 20px;
-	}
 	
 	#star1{
 		color : #db776c;
@@ -55,28 +58,24 @@
 		padding : 0px 10px;
 	}
 	
-	#placePhoto {
-		width : 250px;
-		border-radius : 18px;
-		border-color : pink;
-	}
-	
 	#writeDate{
 		color : #d1d5d9;
+		font-style : italic;
+		font-size : 15px;
 	}
 	
 	#mainTd {
 		width : 260px;
 	}
 	
-	/* #re_contents {
-		margin:auto;
-	} */
-	
-	img {
+	main img {
 		border: 3px solid #f0b1aa;
 	    box-sizing: border-box;
     	border-radius: 20px;
+	}
+	
+	hr {
+		border-top : 1px dashed #9ea7ad;
 	}
 </style>
 
@@ -99,10 +98,7 @@
 				<tbody>
 					<tr>
 						<td rowspan="5" id="mainTd">
-							<img id="placePhoto" width="250px" src="https://www.dailypop.kr/news/photo/202207/61411_118467_5044.jpg">
-							<!-- 실제 실행할 때는 위코드를 지워주고 아래의 코드로 실행할 것 
-							<img id="placePhoto" src="https://www.dailyvet.co.kr/wp-content/uploads/2022/04/20220405eyedeal1.jpg">
-							-->
+							<img id="placePhoto" src="/resources/upload/${placePhoto.PH_STORED_FILE_NAME}"width="250px" src="/">
 						</td>
 					</tr>
 					<tr>
@@ -113,69 +109,87 @@
 						<td>${review.PL_LOC}</td>
 					</tr>
 					<tr>
-						<td>${fn:substring(review.PL_OPEN,0,2)}:${fn:substring(review.PL_OPEN,2,4)} -
+						<td>
+							<c:if test="${!empty review.PL_OPEN}">
+							${fn:substring(review.PL_OPEN,0,2)}:${fn:substring(review.PL_OPEN,2,4)} -
 							${fn:substring(review.PL_CLOSE,0,2)}:${fn:substring(review.PL_CLOSE,2,4)}
-							&nbsp;
-							(
-							<c:if test="${review.PL_OFFDAY == 0}">일요일</c:if>
-							<c:if test="${review.PL_OFFDAY == 1}">월요일</c:if>
-							<c:if test="${review.PL_OFFDAY == 2}">화요일</c:if>
-							<c:if test="${review.PL_OFFDAY == 3}">수요일</c:if>
-							<c:if test="${review.PL_OFFDAY == 4}">목요일</c:if>
-							<c:if test="${review.PL_OFFDAY == 5}">금요일</c:if>
-							<c:if test="${review.PL_OFFDAY == 6}">토요일</c:if>휴무
-							) 
+							</c:if>
+							<c:if test="${!empty review.PL_OFFDAY}"> 
+								<c:forEach items="${fn:split(review.PL_OFFDAY, ',')}" var="day">
+							    	<c:if test="${day == 0}">일</c:if>
+									<c:if test="${day == 1}">월</c:if>
+									<c:if test="${day == 2}">화</c:if>
+									<c:if test="${day == 3}">수</c:if>
+									<c:if test="${day == 4}">목</c:if>
+									<c:if test="${day == 5}">금</c:if>
+									<c:if test="${day == 6}">토</c:if>
+								</c:forEach>휴무
+							</c:if>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<a class="btn slim" >상세보기</a>
+							<a class="use_move btn slim" href="/place/detail/${review.RE_PL_IDX}" 
+							onclick="move(this, 'test:value_a')">상세보기</a>
 						</td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
 		
-		<br><br><br>
-		
-		
-		<!-- 평점 -->
-		<span id="star1" class="bold">${review.RE_STAR}</span>
-		<span id="star2">/5점</span><br>
-		<span class="color">
-		    <c:forEach var="j" begin="1" end="${review.RE_STAR}">
-    			<i class="fa-solid fa-paw color" id="stars"></i>
-			</c:forEach>
-			<c:forEach var="j" begin="1" end="${5-review.RE_STAR}">
-    			<i class="fa-solid fa-paw subColor" id="stars"></i>
-			</c:forEach>&nbsp;
-		</span>
-		
-		<br><br><br>
-		
-		<!-- 후기 -->
-		<div id="re_contents">
-			${review.RE_CONTENTS}
-		</div>	
-		<br><br>
-		
-		<!-- 사진 -->
-		<div id="photos">
-			<c:forEach items="${photos}" var="i" varStatus="status">	
-				<img width="200px" src="/resources/upload/${i.PH_STORED_FILE_NAME}" alt="카페 이미지" id="photo">			
-				&nbsp;&nbsp;
-			</c:forEach>
-		</div>
-		<br><br>
-		
-		
-		<div id="writeDate" class="txt_right">
-			최초작성일 : <fmt:formatDate value="${review.RE_REG_DATE}" pattern="yy.MM.dd" /><br>
-			최종수정일 : <fmt:formatDate value="${review.RE_MOD_DATE}" pattern="yy.MM.dd" />
-		</div>			
 		<br>
 		
-		<div>
+		<div id="place">
+			<!-- 평점 -->
+			<div class="txt_center">
+				<div  width="50%">
+				<i class="fa-solid fa-paw color" id="stars"></i> &nbsp;
+				<span id="star1" class="bold">${review.RE_STAR}</span>
+				<span id="star2">/5점</span><br>
+				</div>
+				<%-- 
+				<span class="color">
+				    <c:forEach var="j" begin="1" end="${review.RE_STAR}">
+		    			<i class="fa-solid fa-paw color" id="stars"></i>
+					</c:forEach>
+					<c:forEach var="j" begin="1" end="${5-review.RE_STAR}">
+		    			<i class="fa-solid fa-paw subColor" id="stars"></i>
+					</c:forEach>&nbsp;
+				</span> 
+				--%>
+			</div>
+			<br>
+			
+			<!-- 후기 -->
+			<div id="re_contents" class="txt_center">
+				${review.RE_CONTENTS}
+			</div>	
+			<br><br>
+			
+			<c:if test="${!empty photos}">
+				<!-- 사진 -->
+				<hr><br>
+				<div id="img_upload" class="flex">	
+					<c:forEach items="${photos}" var="i" varStatus="status">	
+						<label>
+							<img src="/resources/upload/${i.PH_STORED_FILE_NAME}" id="photo">			
+							&nbsp;&nbsp;
+						</label>
+					</c:forEach>
+				</div>
+				<br>
+			</c:if>
+			
+			<div id="writeDate" class="txt_right">
+				최초작성 <fmt:formatDate value="${review.RE_REG_DATE}" pattern="yy-MM-dd" /><br>
+				최종수정 <fmt:formatDate value="${review.RE_MOD_DATE}" pattern="yy-MM-dd" />
+			</div>			
+			
+		</div>
+		
+		<br><br>
+		
+		<div class="txt_center">
 			<a href="/review/updateForm.paw" class="use_move btn submit" 
 			onclick="move(this, 're_idx:${review.RE_IDX}','ph_board_type:review')">수정</a>
 			<table>

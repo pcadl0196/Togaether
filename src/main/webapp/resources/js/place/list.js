@@ -59,39 +59,43 @@ function fn_selectBoardListCallback(data) {
 		select_cate();
 	}
 	
+	//페이징 세팅
+	let params = {
+		divId : "paging",
+		pageIndex : "PAGE_INDEX",
+		totalCount : total,
+		eventName : "fn_selectBoardList",
+		recordCount : 5,
+	};
+	gfn_renderPaging_B(params);
+	
 	//시설 리스트 세팅 로직
 	if (total == 0) {
-		pl_list_body.html("<tr><td class='empty'>조회된 결과가 없습니다.</td></tr>");
+		pl_list_body.html("<tr class='empty'><td>조회된 결과가 없습니다.</td></tr>");
 	} else {
 		str = "";
-		let params = {
-			divId : "paging",
-			pageIndex : "PAGE_INDEX",
-			totalCount : total,
-			eventName : "fn_selectBoardList",
-			recordCount : 5,
-		};
-		gfn_renderPaging_B(params);
-
 		$.each(data.list, function(key, value) {
 			//이미지
-			let image = (isNull(value.PH_NAME))?"<i class='fa-thin fa-image no-image'></i>":"<img src='/resources/upload/"+value.PH_NAME+"' alt='"+value.PL_NAME+" 이미지' onerror='javascript:no_image(this)'>";
+			let image = (isNull(value.PH_NAME))?"<i class='fa-thin fa-image no-image'></i>":"<img src='/resources/upload/s_"+value.PH_NAME+"' alt='"+value.PL_NAME+" 이미지' onerror='javascript:no_image(this)'>";
 			//리뷰(총리뷰)
 			let review = (isNull(value.R_AVG))?"0(0)":value.R_AVG+"("+value.R_COUNT+")";
 			//시설메뉴  +총개수
 			let menu = (isNull(value.PM_NAME))?"":value.PM_NAME;
 			let menu_count = (isNull(value.PM_COUNT) || value.PM_COUNT-1 > 0)?"":" +"+value.PM_COUNT;
-			str += "<tr class='use_move' data-href='/place/detail/"+value.PL_IDX+".paw' onclick='move(this)'>";
-			str += "<th class='img'>이미지</th><td>" + image + "</td>"
-				+ "<th class='cate'>카테고리</th><td>" + value.PC_NAME + "</td>"
-				+ "<th class='name'>시설명</th><td>" + value.PL_NAME + "</td>"
-				+ "<th class='review'>평점</th><td> " + review + "</td>"
-				+ "<th class='loc'>주소</th><td>" + value.PL_LOC + "</td>"
-				+ "<th class='menu'>메뉴</th><td>" + menu + menu_count + "</td>"
+			str += "<tr class='use_move' data-mapping='"+value.PL_IDX+"' data-href='/place/detail/"+value.PL_IDX+".paw' onclick='move(this)'>";
+			str += "<th class='t_img'>이미지</th><td class='img'>" + image + "</td>"
+				+ "<th class='t_cate'>카테고리</th><td class='cate'>" + value.PC_NAME + "</td>"
+				+ "<th class='t_pl_name'>시설명</th><td class='pl_name'>" + value.PL_NAME + "</td>"
+				+ "<th class='t_review'>평점</th><td class='review'> " + review + "</td>"
+				+ "<th class='t_loc'>주소</th><td class='loc'>" + value.PL_LOC + "</td>"
+				+ "<th class='t_menu'>메뉴</th><td class='menu'>" + menu + menu_count + "</td>"
 			str += "</tr>";
 		});
 		pl_list_body.html(str);
 	}
+	
+	//지도 세팅 함수
+	set_map();
 }
 //이미지가 없을 때
 function no_image(target){
