@@ -178,6 +178,13 @@
 			</exclusions>
 		</dependency>
 
+		<!-- javax.mail/mail -->
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4.7</version>
+		</dependency>
+
 		<!-- @Inject -->
 		<dependency>
 			<groupId>javax.inject</groupId>
@@ -281,6 +288,13 @@
 			<artifactId>jackson-databind</artifactId>
 			<version>2.13.3</version>
 		</dependency>
+
+		<!-- gson -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.6</version>
+		</dependency>
 		
 		<!-- 썸네일 생성용 라이브러리 -->
 		<dependency>
@@ -302,6 +316,26 @@
 			<artifactId>ojdbc8</artifactId>
 			<version>21.1.0.0</version>
 		</dependency>
+		
+		<!-- 23.01.28 이소영 웹소켓 -->
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-websocket</artifactId>
+		    <version>${org.springframework-version}</version>
+		</dependency>
+		<!-- 23.02.02 이소영 메세징 -->
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-messaging</artifactId>
+		    <version>${org.springframework-version}</version>
+		</dependency>
+		<!-- 23.02.03 이소영 STOMP -->
+		<dependency>
+	    	<groupId>org.springframework.integration</groupId>
+		    <artifactId>spring-integration-stomp</artifactId>
+		    <version>6.0.2</version>
+		</dependency>
+		
 	</dependencies>
 	
 	<!-- 프로젝트의 빌드방법을 지정 -->
