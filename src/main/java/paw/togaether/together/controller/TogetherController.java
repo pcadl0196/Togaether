@@ -18,8 +18,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import paw.togaether.chat.service.ChatService;
 import paw.togaether.common.domain.CommandMap;
 import paw.togaether.together.service.TogetherService;
+	/**
+	 *	23.02.17 투게더 게스글 마감/ 삭제시 체팅 방 삭제 기능 추가
+	 */
 
 @Controller
 public class TogetherController {
@@ -28,6 +32,7 @@ public class TogetherController {
 	//togetherService의 빈 객체에 의존
 	@Resource(name="togetherService")
 	private TogetherService togetherService;
+	
 	
 	/* 23.02.02 박선영 게시글리스트 페이징화면출력 */
 	@RequestMapping(value="/together/openList")
@@ -119,10 +124,12 @@ public class TogetherController {
 		System.out.println(session.getAttribute("mem_id"));
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//날짜 형태 정해주기
+		SimpleDateFormat tsdf = new SimpleDateFormat("HH:mm");//시간형태 정해주기
 		
 		Date now = new Date();//날짜 마감에 따른 참여하기 비활성화 목적
 		
 		String nowDate = sdf.format(now);
+		String nowTime = tsdf.format(now);
 		
 		ModelAndView mv = new ModelAndView("/together/togetherDetail");
 		
@@ -130,6 +137,7 @@ public class TogetherController {
 		List<Map<String, Object>> withlist = togetherService.togetherWithList(commandMap.getMap());//참여자 리스트 메소드
 		Map<String, Object> checkwith = togetherService.checkWith(commandMap.getMap(),session);//참여여부 확인 메소드
 		
+		mv.addObject("nowTime", nowTime);
 		mv.addObject("nowDate", nowDate);
 		mv.addObject("checkwith", checkwith);	
 		mv.addObject("withlist", withlist);
