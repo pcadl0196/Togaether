@@ -29,6 +29,7 @@ public interface ChatService {
 	// CHAT_WITH 리스트
 	List<Map<String, Object>> chatWihtList(Map<String, Object> map) throws Exception;
 
+	// MESSAGE 리스트
 	List<Map<String, Object>> chatMessageList(Map<String, Object> map) throws Exception;
 
 	// 채팅방 참가회원 삭제
@@ -36,5 +37,7 @@ public interface ChatService {
 
 	// 채팅방 참가 인원 조회
 	int chatWithCountCheck(Map<String, Object> map) throws Exception;
+
+	List<Map<String, Object>> memInfo(Map<String, Object> map) throws Exception;
 
 }

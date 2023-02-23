@@ -122,6 +122,7 @@ public class TogetherController {
 		System.out.println(TO_IDX);
 		System.out.println(commandMap.getMap());
 		System.out.println(session.getAttribute("mem_id"));
+		commandMap.put("TO_IDX", TO_IDX);
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");//날짜 형태 정해주기
 		SimpleDateFormat tsdf = new SimpleDateFormat("HH:mm");//시간형태 정해주기
