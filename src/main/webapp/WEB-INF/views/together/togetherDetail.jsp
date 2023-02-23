@@ -91,7 +91,16 @@ function logincheck(){
 				<!--로그인 되어있고 로그인한 아이디가 작성자 아이디와 같을때  -->
 				<c:if test="${mem_id eq map.TO_WRITER_ID}">
 					<input type="button" class="btn submit" id="creatChat" name="creatChat" value="채팅참여">
-					<input type="button" class="use_move" data-href="/together/modifyForm.paw" onclick="move(this, 'TO_IDX:${map.TO_IDX}')" value="수정하기" style="margin-right:5px;">
+					<!-- 23.02.23 박선영 마감하지 않았을때만 수정가능 -->
+					<c:if test="${nowDate < map.TO_DATE}">
+						<input type="button" class="use_move" data-href="/together/modifyForm.paw" onclick="move(this, 'TO_IDX:${map.TO_IDX}')" value="수정하기" style="margin-right:5px;">
+					</c:if>
+					<!-- 23.02.23 시간도 고려하여 마감하지 않았을때만 수정가능 -->
+					<c:if test="${nowDate eq map.TO_DATE}">
+						<c:if test="${nowTime <= map.TO_TIME }">
+							<input type="button" class="use_move" data-href="/together/modifyForm.paw" onclick="move(this, 'TO_IDX:${map.TO_IDX}')" value="수정하기" style="margin-right:5px;">
+						</c:if>
+					</c:if>
 					<input type="button" class="use_move" data-href="/together/delete.paw" onclick="move(this, 'TO_IDX:${map.TO_IDX}')" value="삭제하기">
 				</c:if>
 				
@@ -100,31 +109,58 @@ function logincheck(){
 					<!-- 참여인원이 모집인원보다 작을때, 모집중일때-->
 					<c:if test="${map.C < map.TO_PEOPLE}">
 					<!-- 23.02.08 박선영 모집날짜가 지나지 않았을때 -->
-					<c:if test="${nowDate < map.TO_DATE}">
-							<!-- 아직 참여하지 않은 상태라면 -->
-							<c:if test="${empty checkwith}">
-								<form id="withreg" name="withreg">
-									<input type="hidden" id="TW_TO_IDX" name="TW_TO_IDX" value="${map.TO_IDX}">
-									<input type="hidden" id="TW_MEM_ID" name="TW_MEM_ID" value="${mem_id}">
-									<input type="button" class="btn" id="withmem" name="withmem" value="참여하개:)">
-								</form>
+						<c:if test="${nowDate < map.TO_DATE}">
+								<!-- 아직 참여하지 않은 상태라면 -->
+								<c:if test="${empty checkwith}">
+									<form id="withreg" name="withreg">
+										<input type="hidden" id="TW_TO_IDX" name="TW_TO_IDX" value="${map.TO_IDX}">
+										<input type="hidden" id="TW_MEM_ID" name="TW_MEM_ID" value="${mem_id}">
+										<input type="button" class="btn" id="withmem" name="withmem" value="참여하개:)">
+									</form>
+								</c:if>
+						</c:if>
+					<!--23.02.21 박선영 모집시간도 고려할때 -->
+						<c:if test="${nowDate eq map.TO_DATE}">
+							<c:if test="${nowTime <= map.TO_TIME }">
+								<!-- 아직 참여하지 않은 상태라면 -->
+								<c:if test="${empty checkwith}">
+									<form id="withreg" name="withreg">
+										<input type="hidden" id="TW_TO_IDX" name="TW_TO_IDX" value="${map.TO_IDX}">
+										<input type="hidden" id="TW_MEM_ID" name="TW_MEM_ID" value="${mem_id}">
+										<input type="button" class="btn" id="withmem" name="withmem" value="참여하개:)">
+									</form>
+								</c:if>
 							</c:if>
-					</c:if>
+						</c:if>
 					</c:if>
 					<!-- 이미 모집완료된 상태에서도 취소버튼 활성화 -->
 					<c:if test="${map.C <= map.TO_PEOPLE}">
 					<!-- 23.02.08 박선영 모집날짜가 지나지 않았을때 -->
-					<c:if test="${nowDate < map.TO_DATE}">
-						<!-- 이미 참여한 상태라면 -->
-						<c:if test="${!empty checkwith}">	
-							<form id="withdel" name="withdel">
-								<input type="button" class="btn submit" id="creatChat" name="creatChat" value="채팅참여">
-								<input type="hidden" id="TW_TO_IDX" name="TW_TO_IDX" value="${map.TO_IDX}">
-								<input type="hidden" id="TW_MEM_ID" name="TW_MEM_ID" value="${mem_id}">
-								<input type="button" class="btn" id="delwith" name="delwith" value="취소하개:(">
-							</form>
-						</c:if>	
-					</c:if>
+						<c:if test="${nowDate < map.TO_DATE}">
+							<!-- 이미 참여한 상태라면 -->
+							<c:if test="${!empty checkwith}">	
+								<form id="withdel" name="withdel">
+									<input type="button" class="btn submit" id="creatChat" name="creatChat" value="채팅참여">
+									<input type="hidden" id="TW_TO_IDX" name="TW_TO_IDX" value="${map.TO_IDX}">
+									<input type="hidden" id="TW_MEM_ID" name="TW_MEM_ID" value="${mem_id}">
+									<input type="button" class="btn" id="delwith" name="delwith" value="취소하개:(">
+								</form>
+							</c:if>	
+						</c:if>
+						<!--23.02.21 박선영 모집시간도 고려할때 -->
+						<c:if test="${nowDate eq map.TO_DATE}">
+							<c:if test="${nowTime <= map.TO_TIME }">
+								<!-- 이미 참여한 상태라면 -->
+							<c:if test="${!empty checkwith}">	
+								<form id="withdel" name="withdel">
+									<input type="button" class="btn submit" id="creatChat" name="creatChat" value="채팅참여">
+									<input type="hidden" id="TW_TO_IDX" name="TW_TO_IDX" value="${map.TO_IDX}">
+									<input type="hidden" id="TW_MEM_ID" name="TW_MEM_ID" value="${mem_id}">
+									<input type="button" class="btn" id="delwith" name="delwith" value="취소하개:(">
+								</form>
+							</c:if>	
+							</c:if>
+						</c:if>
 					</c:if>
 					
 					
@@ -184,8 +220,6 @@ $("#creatChat").click(function() {
 		}).then(function(){
 			location.href = "/chat.paw";
 			enterChatingRoom(roomNumber)
-		}).fail(function() {
-			alert("에러가 발생했습니다");
 		})
 });
 
@@ -194,32 +228,6 @@ const initRoom = function(room, nickname) {
 	stomp.send("/socket/roomList");
 
 }
-
-const enterChatingRoom = function(roomNumber) {
-	const data = {
-			"roomNumber" : ${TO_IDX},
-			"nickname" : ${mem_id}
-		}
-	$.ajax({
-			url: "/chattingRoom-enter",
-			type: "GET",
-			data: data,
-		})
-		.then(function(room){
-			initRoom(room, nickname);
-			
-			// 채팅방 참가 메세지
-			room.message = nickname + "님이 참가하셨습니다";
-			stomp.send(
-				"/socket/notification/" + roomNumber, {}, 
-				JSON.stringify(room));
-			
-		})
-		.fail(function(result){
-			errorMSG(result);
-		})
-	}
-
 </script>
 
 <%@ include file="/WEB-INF/include/common-footer.jspf" %>
